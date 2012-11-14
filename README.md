@@ -1,5 +1,4 @@
 ```coffee
-nginx = new Nginx
 
 app = express()
 expressSwaggerDoc = require 'express-swagger-doc'
