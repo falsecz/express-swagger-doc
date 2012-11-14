@@ -1,0 +1,15 @@
+{
+  "name": "express-swagger-doc",
+  "version": "0.1.0",
+  "description": "Autogenerate express doc from coffeescript in Swagger format",
+  "main": "index.coffee",
+  "directories": {
+    "doc": "doc"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": "",
+  "author": "",
+  "license": "BSD"
+}
