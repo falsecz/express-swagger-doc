@@ -1,3 +1,4 @@
+```coffee
 nginx = new Nginx
 
 app = express()
@@ -15,3 +16,5 @@ Get application logs
 ###
 
 app.get '/apps/:app/:branch/logs', (req, res) ->
+
+```
