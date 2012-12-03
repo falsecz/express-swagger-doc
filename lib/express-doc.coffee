@@ -21,7 +21,7 @@ module.exports = (source) ->
 			methodName = current.args?[0].base?.value # todo strip slashes & quotes
 			methodName = methodName.replace /[\'\"]/g, '' if methodName
 			# console.log methodName
-			functionName = current.variable.properties[0]?.name.value
+			functionName = current.variable.properties[0]?.name.value.toString()
 			
 			continue if methodName is '/doc.json'
 			if methodName and functionName in ['get', 'post', 'put', 'delete']
