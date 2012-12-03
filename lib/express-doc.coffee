@@ -73,12 +73,12 @@ exports.parse = (source) ->
 			
 			returnType = null
 			if comment
-				util.log util.inspect comment
+				#util.log util.inspect comment
 				newComment = []
 				for line in comment.split /\n/g
 #					x = line.match /^:([^\s]+) ?-?(.*)/
 					x = line.match /^@([^\s]+) ([^\s]+) ?(.*)/
-					util.log util.inspect x
+					#util.log util.inspect x
 					
 					if x
 
@@ -91,7 +91,7 @@ exports.parse = (source) ->
 						
 						
 						parts = x[2].match /\{.*\}.*/g
-						util.log util.inspect parts 
+						#util.log util.inspect parts 
 						
 						
 						y = x[2].split ':'
