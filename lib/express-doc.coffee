@@ -8,7 +8,15 @@
 CoffeeScript = require 'coffee-script'
 util = require 'util'
 
-module.exports = (source) -> 
+
+types = {}
+exports.define = (name, data) -> 
+	types[name] = data
+	types[name].id = name
+
+exports.parse = (source) -> 
+
+	# util.log util.inspect types
 	root = CoffeeScript.nodes source 
 
 	docs = {}
@@ -42,7 +50,8 @@ module.exports = (source) ->
 #		basePath: "http://10.1.69.105/"
 		resourcePath: "/"
 		apis: [	]
-		methods: {}
+		# methods: {}
+		models: types
 	
 	# util# .log util.inspect docs
 	for name, operations of docs
@@ -62,21 +71,41 @@ module.exports = (source) ->
 			params = []
 			notes = []
 			
+			returnType = null
 			if comment
+				util.log util.inspect comment
 				newComment = []
 				for line in comment.split /\n/g
-					x = line.match /^:([^\s]+) ?-?(.*)/
+#					x = line.match /^:([^\s]+) ?-?(.*)/
+					x = line.match /^@([^\s]+) ([^\s]+) ?(.*)/
+					util.log util.inspect x
+					
 					if x
-						
+
+						if x[1] is 'return'
+							returnType = x[2]
+							continue
 						# console.log '>>>>>> ' + line
 						# util.log util.inspect x
 						# util.log x[0] + "-------" + x[1]
+						
+						
+						parts = x[2].match /\{.*\}.*/g
+						util.log util.inspect parts 
+						
+						
+						y = x[2].split ':'
+						dataType = dataName = y[0]
+						dataType = y[1] if y[1]
+						
+						
 						params.push
-							description: x[2]
-							paramType: "path"
+							name: dataName 
+							description: x[3]
+							paramType: x[1] # "path"
 							required: true
 							allowMultiple: false
-							dataType: x[1]
+							dataType: dataType 
 					else if params.length is 0
 						newComment.push line
 					else
@@ -93,11 +122,11 @@ module.exports = (source) ->
 				summary: comment
 				notes: notes 
 				nickname: name.replace /[\/\:]/g, ''
-				responseClass: "void"
+				# responseClass: "User"
 				errorResponses: []
 			
 			xxa.parameters = params if params.length
-			
+			xxa.responseClass = returnType if returnType
 			
 			
 			ap.operations.push xxa
