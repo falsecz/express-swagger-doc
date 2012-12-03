@@ -16,15 +16,16 @@ exports.route = (fileName, url) ->
 				res.json
 					apiVersion: "0.2"
 					swaggerVersion: "1.1"
+					#basePath: "http://10.11.1.8:5000/docs/"
 					apis: [
 						{
-							path: '/doc.json'
+							path: '/doc'
 							description: ''
 						}
 					]
 				return
 
-			if path.indexOf('/doc.json') is 0
+			if path.indexOf('/doc') is 0
 				res.header("Access-Control-Allow-Origin", "*")
 				res.json expressdoc.parse fs.readFileSync(fileName) + ""
 				return

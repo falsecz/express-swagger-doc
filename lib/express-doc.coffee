@@ -47,7 +47,7 @@ exports.parse = (source) ->
 	o = 
 		apiVersion: "0.1"
 		swaggerVersion: "1.1"
-#		basePath: "http://10.1.69.105/"
+		#basePath: "http://localhost:5000/"
 		resourcePath: "/"
 		apis: [	]
 		# methods: {}
@@ -126,6 +126,7 @@ exports.parse = (source) ->
 				errorResponses: []
 			
 			xxa.parameters = params if params.length
+			xxa.responseClass = "void" 
 			xxa.responseClass = returnType if returnType
 			
 			
