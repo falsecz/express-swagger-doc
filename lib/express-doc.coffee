@@ -45,7 +45,7 @@ exports.parse = (source) ->
 
 	# return {}
 	o = 
-		apiVersion: "0.1"
+		apiVersion: "0.2"
 		swaggerVersion: "1.1"
 		#basePath: "http://localhost:5000/"
 		resourcePath: "/"
@@ -98,12 +98,16 @@ exports.parse = (source) ->
 						dataType = dataName = y[0]
 						dataType = y[1] if y[1]
 						
-						
+						if dataName[0] is "?"
+							required = false
+							dataName = dataName[1...]
+						else
+							required = true
 						params.push
 							name: dataName 
 							description: x[3]
 							paramType: x[1] # "path"
-							required: true
+							required: required
 							allowMultiple: false
 							dataType: dataType 
 					else if params.length is 0
