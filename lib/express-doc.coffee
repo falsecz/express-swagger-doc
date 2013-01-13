@@ -97,6 +97,12 @@ exports.parse = (source) ->
 						y = x[2].split ':'
 						dataType = dataName = y[0]
 						dataType = y[1] if y[1]
+
+						defValue = dataType.match /^(.+)<(.+)>/ if dataType
+						defaultValue = null
+						if defValue
+							dataType = defValue[1]
+							defaultValue = defValue[2]
 						
 						if dataName[0] is "?"
 							required = false
@@ -109,7 +115,8 @@ exports.parse = (source) ->
 							paramType: x[1] # "path"
 							required: required
 							allowMultiple: false
-							dataType: dataType 
+							dataType: dataType
+							defaultValue: defaultValue
 					else if params.length is 0
 						newComment.push line
 					else
