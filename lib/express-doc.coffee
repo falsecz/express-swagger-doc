@@ -109,6 +109,13 @@ exports.parse = (source) ->
 							dataName = dataName[1...]
 						else
 							required = true
+						isList = dataType.match /^list\[(.+)\]/i if dataType
+						allowableValues = null
+						if isList
+							dataType = "list"
+							allowableValues = {}
+							allowableValues['valueType'] = "list"
+							allowableValues['values'] = isList[1].split(",") if (isList[1] and isList[1].indexOf(",") isnt -1)
 						params.push
 							name: dataName 
 							description: x[3]
@@ -117,6 +124,7 @@ exports.parse = (source) ->
 							allowMultiple: false
 							dataType: dataType
 							defaultValue: defaultValue
+							allowableValues: allowableValues if allowableValues
 					else if params.length is 0
 						newComment.push line
 					else
