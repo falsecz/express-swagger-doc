@@ -16,32 +16,42 @@ exports.define = (name, data) ->
 
 exports.parse = (source) -> 
 
-	# util.log util.inspect types
-	root = CoffeeScript.nodes source 
+	root = CoffeeScript.nodes source.toString()
 
 	docs = {}
-	for exp, i in root.expressions
-		current = root.expressions[i]
-		# todo osetrit prev
-		prev = root.expressions[i-1]
+	for rootExp, xi in root.expressions
+		# util.log util.inspect rootExp.value?.body?.expressions
+		continue unless rootExp.value?.body?.expressions?
+		for exp, i in rootExp.value?.body?.expressions
+			# console.log exp
+		
+			current = rootExp.value.body.expressions[i]
+			# todo osetrit prev
+			prev = rootExp.value.body.expressions[i-1]
+			# console.log current
 	
-		if current.args?[0]
-			methodName = current.args?[0].base?.value # todo strip slashes & quotes
-			methodName = methodName.replace /[\'\"]/g, '' if methodName
-			# console.log methodName
-			functionName = current.variable.properties[0]?.name.value.toString()
+			if current.args?[0]
+				methodName = current.args?[0].base?.value # todo strip slashes & quotes
+				methodName = methodName.replace /[\'\"]/g, '' if methodName
+				# console.log methodName
+				functionName = current.variable.properties[0]?.name.value.toString()
 			
-			continue if methodName is '/doc.json'
-			if methodName and functionName in ['get', 'post', 'put', 'delete']
-				# console.log 'xxxxxxx'
-				# util.log util.inspect prev.comment
-				#todo ujistit ze je to comment
-				docs[methodName] = [] unless docs[methodName]
-				docs[methodName].push
-					httpMethod: functionName
-					comment: prev.comment + ""
-				# console.log "===== #{methodName}"
-				# console.log prev.comment 
+				continue if methodName is '/doc.json'
+				if methodName and functionName in ['get', 'post', 'put', 'delete']
+					# console.log 'xxxxxxx'
+					# util.log util.inspect prev.comment
+					#todo ujistit ze je to comment
+					docs[methodName] = [] unless docs[methodName]
+					docs[methodName].push
+						httpMethod: functionName
+						comment: prev?.comment + ""
+					# console.log "===== #{methodName}"
+					# unless prev?
+					# 	console.log methodName.red
+					# console.log prev.comment 
+
+
+
 
 	# return {}
 	o = 
@@ -73,12 +83,14 @@ exports.parse = (source) ->
 			
 			returnType = null
 			if comment
-				#util.log util.inspect comment
+				# console.log 'xx'.cyan
+				# util.log util.inspect comment
 				newComment = []
 				for line in comment.split /\n/g
+					line = line.replace /^\s+/g, ''
 #					x = line.match /^:([^\s]+) ?-?(.*)/
 					x = line.match /^@([^\s]+) ([^\s]+) ?(.*)/
-					#util.log util.inspect x
+					# util.log util.inspect line
 					
 					if x
 
@@ -123,7 +135,7 @@ exports.parse = (source) ->
 							required: required
 							allowMultiple: false
 							dataType: dataType
-							defaultValue: defaultValue
+							defaultValue: defaultValue if defaultValue
 							allowableValues: allowableValues if allowableValues
 					else if params.length is 0
 						newComment.push line
@@ -140,7 +152,7 @@ exports.parse = (source) ->
 				httpMethod: op.httpMethod
 				summary: comment
 				notes: notes 
-				nickname: name.replace /[\/\:]/g, ''
+				nickname: op.httpMethod + name.replace /[\/\:]/g, ''
 				# responseClass: "User"
 				errorResponses: []
 			
